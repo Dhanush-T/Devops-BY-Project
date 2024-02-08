@@ -46,7 +46,7 @@ stages:
         steps:
           - script: |
               cp /home/dhanusht/.m2/repository/blueyonder/project/devops/0.0.1-SNAPSHOT/devops-0.0.1-SNAPSHOT.jar .
-               sudo docker login devopsprojectby.azurecr.io -u devopsProjectBY -p x4L9aO3mln4zeWBlqwuUJ+8S0Dzjs1PHLVGTFS0l6y+ACRB/GbRO
+              docker login devopsprojectby.azurecr.io -u devopsProjectBY -p x4L9aO3mln4zeWBlqwuUJ+8S0Dzjs1PHLVGTFS0l6y+ACRB/GbRO
               docker build -t devops-project:acr-v1 .
             displayName: "Building image"
         dependsOn: 'Docker_Install'
@@ -63,6 +63,7 @@ stages:
       - job: 'Docker_Push'
         steps:
           - script: |
+              docker login devopsprojectby.azurecr.io -u devopsProjectBY -p x4L9aO3mln4zeWBlqwuUJ+8S0Dzjs1PHLVGTFS0l6y+ACRB/GbRO
               docker tag devops-project:acr-v1 devopsprojectby.azurecr.io/devops-project-v1
               docker push devopsprojectby.azurecr.io/devops-project-v1
             displayName: "Pushing image"
