@@ -54,6 +54,16 @@
 				<enabled>false</enabled>
 			</releases>
 		</repository>
+		<repository>
+			<id>dhanushtamilselvan26</id>
+			<url>https://pkgs.dev.azure.com/dhanushtamilselvan26/_packaging/dhanushtamilselvan26/maven/v1</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
@@ -73,5 +83,16 @@
 			</releases>
 		</pluginRepository>
 	</pluginRepositories>
-
+	<distributionManagement>
+		<repository>
+			<id>dhanushtamilselvan26</id>
+			<url>https://pkgs.dev.azure.com/dhanushtamilselvan26/_packaging/dhanushtamilselvan26/maven/v1</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</distributionManagement>
 </project>
