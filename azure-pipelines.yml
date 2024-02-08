@@ -39,7 +39,7 @@ stages:
         steps:
           - script: |
               chmod +x dockerInstallation.sh
-              sudo ./dockerInstallation.sh
+              sudo bash ./dockerInstallation.sh
             displayName: "Docker Installation"
         condition: succeeded()    
 
