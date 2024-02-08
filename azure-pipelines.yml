@@ -38,8 +38,7 @@ stages:
       - job: 'Docker_Install'
         steps:
           - script: |
-              chmod +x dockerInstallation.sh
-              sudo bash ./dockerInstallation.sh
+              sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
             displayName: "Docker Installation"
         condition: succeeded()    
 
