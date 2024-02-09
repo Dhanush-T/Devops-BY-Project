@@ -1,0 +1,10 @@
+image: devopsprojectby.azurecr.io/devops-project-v1
+Name: project-app
+replicas: 2
+
+imagePullSecrets: [{ name: project-secret }]
+
+deploymentlabels:
+  app: devopsproject
+
+servicetype: NodePort
