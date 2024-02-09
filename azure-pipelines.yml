@@ -5,72 +5,72 @@ pool:
   name: BY-Agent
 
 stages:
-  # - stage: 'Maven'
-  #   displayName: 'Execution of java-17 and Maven project'
-  #   jobs:
-  #     - job: 'MavenInstallation'
-  #       steps:
-  #       - script: |
-  #           sudo apt update
-  #           sudo apt install maven -y
-  #           sudo apt install openjdk-17-jdk openjdk-17-jre -y
-  #         displayName: 'Installing maven and java'
-  #       condition: succeeded() 
+  - stage: 'Maven'
+    displayName: 'Execution of java-17 and Maven project'
+    jobs:
+      - job: 'MavenInstallation'
+        steps:
+        - script: |
+            sudo apt update
+            sudo apt install maven -y
+            sudo apt install openjdk-17-jdk openjdk-17-jre -y
+          displayName: 'Installing maven and java'
+        condition: succeeded() 
       
-  #     - job: 'MavenJob'
-  #       steps:
-  #       - script: |
-  #           mvn clean install
-  #           mvn test
-  #           mvn deploy
-  #         displayName: "Running maven command"
-  #       - task: PublishTestResults@2
-  #         inputs:
-  #           testResultsFormat: JUnit
-  #           testResultsFiles: '**/TEST-*.xml'
-  #       dependsOn: MavenInstallation
-  #       condition: succeeded()
-  #   condition: succeeded()
+      - job: 'MavenJob'
+        steps:
+        - script: |
+            mvn clean install
+            mvn test
+            mvn deploy
+          displayName: "Running maven command"
+        - task: PublishTestResults@2
+          inputs:
+            testResultsFormat: JUnit
+            testResultsFiles: '**/TEST-*.xml'
+        dependsOn: MavenInstallation
+        condition: succeeded()
+    condition: succeeded()
 
-  # - stage: 'Docker'
-  #   displayName: 'Publish docker images'
-  #   jobs:
-  #     - job: 'Docker_Install'
-  #       steps:
-  #         - script: |
-  #             sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-  #           displayName: "Docker Installation"
-  #       condition: succeeded()    
+  - stage: 'Docker'
+    displayName: 'Publish docker images'
+    jobs:
+      - job: 'Docker_Install'
+        steps:
+          - script: |
+              sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+            displayName: "Docker Installation"
+        condition: succeeded()    
 
-  #     - job: 'Docker_Build'
-  #       steps:
-  #         - script: |
-  #             cp /home/dhanusht/.m2/repository/blueyonder/project/devops/0.0.1-SNAPSHOT/devops-0.0.1-SNAPSHOT.jar .
-  #             docker login devopsprojectby.azurecr.io -u devopsProjectBY -p x4L9aO3mln4zeWBlqwuUJ+8S0Dzjs1PHLVGTFS0l6y+ACRB/GbRO
-  #             docker build -t devops-project:acr-v1 .
-  #           displayName: "Building image"
-  #       dependsOn: 'Docker_Install'
-  #       condition: succeeded()
+      - job: 'Docker_Build'
+        steps:
+          - script: |
+              cp /home/dhanusht/.m2/repository/blueyonder/project/devops/0.0.1-SNAPSHOT/devops-0.0.1-SNAPSHOT.jar .
+              docker login devopsprojectby.azurecr.io -u devopsProjectBY -p x4L9aO3mln4zeWBlqwuUJ+8S0Dzjs1PHLVGTFS0l6y+ACRB/GbRO
+              docker build -t devops-project:acr-v1 .
+            displayName: "Building image"
+        dependsOn: 'Docker_Install'
+        condition: succeeded()
 
-  #     - job: 'Docker_Run'
-  #       steps:
-  #         - script: |
-  #             docker run devops-project:acr-v1
-  #           displayName: "Running container"
-  #       dependsOn: 'Docker_Build'
-  #       condition: succeeded()
+      - job: 'Docker_Run'
+        steps:
+          - script: |
+              docker run devops-project:acr-v1
+            displayName: "Running container"
+        dependsOn: 'Docker_Build'
+        condition: succeeded()
 
-  #     - job: 'Docker_Push'
-  #       steps:
-  #         - script: |
-  #             docker login devopsprojectby.azurecr.io -u devopsProjectBY -p x4L9aO3mln4zeWBlqwuUJ+8S0Dzjs1PHLVGTFS0l6y+ACRB/GbRO
-  #             docker tag devops-project:acr-v1 devopsprojectby.azurecr.io/devops-project-v1
-  #             docker push devopsprojectby.azurecr.io/devops-project-v1
-  #           displayName: "Pushing image"
-  #       dependsOn: 'Docker_Run'
-  #       condition: succeeded()
-  #   dependsOn: 'Maven'
-  #   condition: succeeded()
+      - job: 'Docker_Push'
+        steps:
+          - script: |
+              docker login devopsprojectby.azurecr.io -u devopsProjectBY -p x4L9aO3mln4zeWBlqwuUJ+8S0Dzjs1PHLVGTFS0l6y+ACRB/GbRO
+              docker tag devops-project:acr-v1 devopsprojectby.azurecr.io/devops-project-v1
+              docker push devopsprojectby.azurecr.io/devops-project-v1
+            displayName: "Pushing image"
+        dependsOn: 'Docker_Run'
+        condition: succeeded()
+    dependsOn: 'Maven'
+    condition: succeeded()
   
   - stage: 'Kubernetes'
     displayName: 'Deployment using K8S'
@@ -96,15 +96,36 @@ stages:
         dependsOn: 'Installk8S'
         condition: succeeded()
 
-      - job: 'InitialMinikubeSetups'
+      - job: 'MinikubeSetups'
         steps:
           - script: |
               minikube start
               minikube addons enable metrics-server
+              kubectl create namespace devops-project
               kubectl config set-context --current --namespace=devops-project
-              kubectl create secret docker-registry projectSecret --namespace devops-project --docker-server=devopsprojectby.azurecr.io --docker-username=devopsProjectBY --docker-password=x4L9aO3mln4zeWBlqwuUJ+8S0Dzjs1PHLVGTFS0l6y+ACRB/GbROdevopsProjectBY
+              kubectl create secret generic project-secret --from-file=.dockerconfigjson=/home/dhanusht/.docker/config.json --type=kubernetes.io/dockerconfigjson
             displayName: "Initial setup for minikube"
         dependsOn: 'InstallMinikube'
         condition: succeeded()
-    # dependsOn: 'Docker'
+      
+      - job: 'InstallHelm'
+        steps:
+          - script: |
+              curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
+              sudo apt-get install apt-transport-https --yes
+              echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
+              sudo apt-get update
+              sudo apt-get install -y helm
+            displayName: "Installing Helm"
+        dependsOn: 'MinikubeSetups'
+        condition: succeeded()
+      
+      - job: 'DeployWithHelm'
+        steps:
+          - script: helm install my-release-v1 projectHelmCharts
+            displayName: "Executing the deployment part using Helm"
+        dependsOn: 'InstallHelm'
+        condition: succeeded()
+        
+    dependsOn: 'Docker'
     condition: succeeded()
