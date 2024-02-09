@@ -101,7 +101,7 @@ stages:
           - script: |
               minikube start
               minikube addons enable metrics-server
-              minikube config set-context --current --namespace=devops-project
+              kubectl config set-context --current --namespace=devops-project
               kubectl create secret docker-registry projectSecret --namespace devops-project --docker-server=devopsprojectby.azurecr.io --docker-username=devopsProjectBY --docker-password=x4L9aO3mln4zeWBlqwuUJ+8S0Dzjs1PHLVGTFS0l6y+ACRB/GbROdevopsProjectBY
             displayName: "Initial setup for minikube"
         dependsOn: 'InstallMinikube'
