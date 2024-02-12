@@ -1,8 +1,15 @@
 name: Package Installation
 
-steps:
-    - name: Java Install
-      run: sudo apt install openjdk-17-jdk openjdk-17-jre
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
-    - name: Maven Install
-      run: sudo apt install maven
+run:
+  steps:
+  - name: Java Install
+    run: sudo apt install openjdk-17-jdk openjdk-17-jre
+
+  - name: Maven Install
+    run: sudo apt install maven
