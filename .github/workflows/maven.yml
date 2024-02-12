@@ -28,6 +28,9 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
+    - name: Package Installation
+      uses: "./installation.yaml"
+
     - name: Clean Install
       run: mvn clean install
 
